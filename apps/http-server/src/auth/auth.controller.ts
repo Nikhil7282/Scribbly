@@ -14,4 +14,9 @@ export class AuthController {
   async register(@Body() newAuth: RegisterDto) {
     return {};
   }
+
+  @TsRest(AuthContract.login)
+  async login(@Body() payload: { username: string; password: string }) {
+    return this.authService.login(payload);
+  }
 }

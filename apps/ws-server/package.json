@@ -8,6 +8,7 @@
   "keywords": [],
   "dependencies": {
     "@repo/typescript-config": "workspace:*",
+    "@repo/contract": "workspace:*",
     "jsonwebtoken": "^9.0.2",
     "ws": "^8.18.0"
   },

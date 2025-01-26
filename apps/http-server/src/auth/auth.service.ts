@@ -1,11 +1,21 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { prismaClient } from '@repo/db/client';
 
 @Injectable()
 export class AuthService {
   constructor(private jwtService: JwtService) {}
 
-  async login() {}
+  async login(payload: { username: string; password: string }) {
+    const isValid = await this.validateUser(payload);
+    if (!isValid) {
+      throw new NotFoundException('User not found');
+    }
+    return {
+      message: 'Login successful',
+      token: this.createJwtToken(payload),
+    };
+  }
 
   async register() {}
 
