@@ -1,5 +1,5 @@
 {
-  "name": "Excalidraw",
+  "name": "scribbly",
   "private": true,
   "scripts": {
     "build": "turbo build",
