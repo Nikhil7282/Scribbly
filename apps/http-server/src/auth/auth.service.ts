@@ -23,6 +23,10 @@ export class AuthService {
     username: string;
     password: string;
   }): Promise<Boolean> {
+    // const isUserValid = await prismaClient.user.findUnique({
+    //   where: { username: payload.username }, // Use 'where' to filter by username
+    //   select: { username: true },
+    // });
     return true;
   }
 
