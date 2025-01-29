@@ -9,7 +9,7 @@ export class AuthStrategy extends PassportStrategy(Strategy) {
     super();
   }
 
-  async validate(payload: { username: string; password: string }) {
+  async validate(payload: { email: string; password: string }) {
     return this.authService.validateUser(payload);
   }
 }

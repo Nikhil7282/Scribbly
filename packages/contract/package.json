@@ -1,10 +1,11 @@
 {
   "name": "@repo/contract",
   "version": "1.0.0",
-  "main": "src/index.ts",  
+  "main": "index.js",  
   "exports":{
     "./client":  "./src/index.ts",
-    "./constants":"./src/backend-constants.ts"
+    "./constants":"./src/backend-constants.ts",
+    "./auth/types":"./src/auth/contract.ts"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
