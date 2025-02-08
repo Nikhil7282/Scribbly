@@ -6,15 +6,17 @@ import {
   LoginSchema,
   RegisterSchema,
   UpdateUserSchema,
+  UserSchema,
 } from '@repo/contract/client';
 import z from 'zod';
-import { AuthGuard } from '@nestjs/passport';
+import { Auth, GetUserFromToken } from './user.decorator';
 
 const AuthContract = nestControllerContract(contract.authContract);
 
 export type RegisterDto = z.infer<typeof RegisterSchema>;
 export type LoginDto = z.infer<typeof LoginSchema>;
 export type UpdateUserDto = z.infer<typeof UpdateUserSchema>;
+export type User = z.infer<typeof UserSchema>;
 
 @Controller()
 export class AuthController {
@@ -30,9 +32,12 @@ export class AuthController {
     return this.authService.login(payload);
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @Auth()
   @TsRest(AuthContract.updateUser)
-  async updateUser(@Body() payload: UpdateUserDto) {
-    return this.authService.editUserDetails(payload);
+  async updateUser(
+    @GetUserFromToken() user: User,
+    @Body() payload: UpdateUserDto,
+  ) {
+    return this.authService.editUserDetails(payload, user);
   }
 }

@@ -7,7 +7,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { prismaClient } from '@repo/db/client';
 
-import { LoginDto, RegisterDto, UpdateUserDto } from './auth.controller';
+import { LoginDto, RegisterDto, UpdateUserDto, User } from './auth.controller';
 
 @Injectable()
 export class AuthService {
@@ -59,32 +59,37 @@ export class AuthService {
     };
   }
 
-  async editUserDetails(payload: UpdateUserDto) {
-    const validEmail = await prismaClient.user.findUnique({
-      where: { email: payload.email },
+  async editUserDetails(payload: UpdateUserDto, user: User) {
+    const validEmail = await prismaClient.user.findFirst({
+      where: {
+        email: payload.email,
+        id: {
+          not: user.id,
+        },
+      },
     });
 
     if (validEmail) {
       throw new BadRequestException('Email already exists');
     }
 
-    // const user = await prismaClient.user.update({
-    //   where: { id: payload.id },
-    //   data: {
-    //     username: payload.username,
-    //     email: payload.email,
-    //   },
-    // });
+    await prismaClient.user.update({
+      where: { id: user.id },
+      data: {
+        username: payload.username,
+        email: payload.email,
+      },
+    });
+
+    return {
+      message: 'User details updated',
+    };
   }
 
-  async validateUser(payload: { email: string; password: string }): Promise<{
-    id: string;
+  async validateUser(payload: {
     email: string;
-    username: string;
     password: string;
-    createdAt: Date;
-    updatedAt: Date;
-  } | null> {
+  }): Promise<User | null> {
     const user = await prismaClient.user.findFirst({
       where: { email: payload.email },
     });

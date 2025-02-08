@@ -16,6 +16,15 @@ export const LoginSchema = z.object({
 
 export const UpdateUserSchema = RegisterSchema.omit({ password: true });
 
+export const UserSchema = z.object({
+  id: z.string().cuid(),
+  email: z.string().email(),
+  username: z.string().min(1),
+  password: z.string().min(6),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+
 const AuthEndPoints = c.router(
   {
     register: {
