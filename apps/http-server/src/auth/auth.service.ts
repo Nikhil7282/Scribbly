@@ -30,7 +30,7 @@ export class AuthService {
 
     return {
       message: 'Login successful',
-      token: this.createJwtToken(payload),
+      token: this.createJwtToken(user),
     };
   }
 
@@ -96,7 +96,7 @@ export class AuthService {
     return user;
   }
 
-  private createJwtToken(payload: { password: string; email: string }) {
+  private createJwtToken(payload: User) {
     return this.jwtService.sign(payload);
   }
 }
