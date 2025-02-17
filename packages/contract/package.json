@@ -5,7 +5,7 @@
   "exports":{
     "./client":  "./src/index.ts",
     "./constants":"./src/backend-constants.ts",
-    "./auth/types":"./src/auth/contract.ts"
+    "./room":"./src/room.ts"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

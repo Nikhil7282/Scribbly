@@ -1,4 +1,4 @@
-import { Controller, Body, UseGuards } from '@nestjs/common';
+import { Controller, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { nestControllerContract, TsRest } from '@ts-rest/nest';
 import {
