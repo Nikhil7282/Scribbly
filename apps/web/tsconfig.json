@@ -5,7 +5,12 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "paths": {
+      "@/*": ["./app/*"],
+      "@components/*": ["./app/components/*"], // Optional: Alias for components (if using app directory)
+      "@lib/*": ["./app/lib/*"]  
+    },
   },
   "include": [
     "**/*.ts",

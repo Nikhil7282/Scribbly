@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateRoomDto } from './room.controller';
 import { User } from '../auth/auth.controller';
 import { prismaClient } from '@repo/db/client';
@@ -11,7 +11,7 @@ export class RoomService {
     });
 
     if (roomExist) {
-      throw new Error('Room already exists');
+      throw new BadRequestException('Room already exists');
     }
 
     const room = await prismaClient.rooms.create({
