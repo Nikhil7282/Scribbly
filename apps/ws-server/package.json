@@ -9,9 +9,9 @@
   },
   "keywords": [],
   "dependencies": {
-    "@repo/typescript-config": "workspace:*",
     "@repo/contract": "workspace:*",
-    "@repo/db":"workspace:*",
+    "@repo/db": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
     "jsonwebtoken": "^9.0.2",
     "ws": "^8.18.0"
   },
@@ -20,6 +20,7 @@
   "description": "",
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.8",
-    "@types/ws": "^8.5.14"
+    "@types/ws": "^8.5.14",
+    "nodemon": "^3.1.9"
   }
 }
