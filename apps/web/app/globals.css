@@ -1,18 +1,12 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+/* @custom-variant dark (&:is(.dark *)); */
 
 html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
 }
 
 a {
@@ -106,7 +100,7 @@ a {
   --sidebar-ring: oklch(0.552 0.016 285.938);
 }
 
-@theme inline {
+/* @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -151,4 +145,4 @@ a {
   body {
     @apply bg-background text-foreground;
   }
-}
+} */
