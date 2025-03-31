@@ -1,4 +1,4 @@
-import Navbar from "@/common/Navbar";
+import Navbar from "@common/Navbar";
 
 export default function Login() {
   return (

@@ -8,8 +8,10 @@
     ],
     "paths": {
       "@/*": ["./app/*"],
-      "@components/*": ["./app/components/*"], // Optional: Alias for components (if using app directory)
-      "@lib/*": ["./app/lib/*"]  
+      "@components/*": ["./app/components/*"],
+      "@lib/*": ["./app/lib/*"],
+      "@draw/*":["../web/draw/*"],
+      "@common/*":["../web/common/*"]  
     },
   },
   "include": [
