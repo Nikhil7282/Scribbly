@@ -31,13 +31,6 @@ wss.on("connection", (ws, req) => {
       return;
     }
 
-    const userExistInGlobalList = users.find(
-      (user) => user.userId === isVerified.id
-    );
-
-    if (userExistInGlobalList) {
-      return;
-    }
     users.push({ ws, userId: isVerified.id, rooms: [] });
 
     ws.on("message", async (message) => {
