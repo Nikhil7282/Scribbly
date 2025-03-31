@@ -1,10 +1,12 @@
 import http from "http";
 import { WebSocketServer } from "ws";
-import { JWT_SECRET } from "@repo/contract/constants";
-import { prismaClient } from "@repo/db/client";
-
-import { MessageType, verifyUser } from "./utils/utils";
-import { User } from "./utils/type";
+import { verifyUser } from "./utils/utils";
+import { MessageType, User, WebSocketData } from "./utils/types";
+import {
+  handleJoinRoom,
+  handleLeaveRoom,
+  handleMessage,
+} from "./utils/handlers";
 
 const server = http.createServer();
 
@@ -29,77 +31,33 @@ wss.on("connection", (ws, req) => {
       return;
     }
 
+    const userExistInGlobalList = users.find(
+      (user) => user.userId === isVerified.id
+    );
+
+    if (userExistInGlobalList) {
+      return;
+    }
     users.push({ ws, userId: isVerified.id, rooms: [] });
 
     ws.on("message", async (message) => {
-      let parsedData;
+      let parsedData: WebSocketData;
       if (typeof message !== "string") {
         parsedData = JSON.parse(message.toString());
       } else {
         parsedData = JSON.parse(message);
       }
       if (parsedData && parsedData.type === MessageType.JOIN_ROOM) {
-        const user = users.find((user) => user.userId === isVerified.id);
-        if (!user) {
-          return;
-        }
-        const isAlreadyJoined = user?.rooms.includes(parsedData.roomId);
-        if (isAlreadyJoined) {
-          ws.send(
-            JSON.stringify({
-              message: "You are already in a room",
-              Error: true,
-            })
-          );
-        }
-        user?.rooms.push(parsedData.roomId);
-
-        // const { roomId } = parsedData;
-
-        // const room = await prismaClient.rooms.findUnique({
-        //   where: { id: roomId },
-        // });
-
-        // const usersExist = await prismaClient.user.findFirst({
-        //   where: { rooms: { some: roomId } },
-        // });
-
-        // if (usersExist) {
-        //   ws.send(
-        //     JSON.stringify({
-        //       Error: true,
-        //       message: "You are already in a room",
-        //     })
-        //   );
-        //   return;
-        // }
-
-        // if (!room) {
-        //   ws.send(
-        //     JSON.stringify({
-        //       Error: true,
-        //       message: "Room does not exist",
-        //     })
-        //   );
-        //   return;
-        // }
-
-        // prismaClient.user.update({
-        //   where: { id: isVerified.id, rooms: { none: { id: room.id } } },
-        //   data: { rooms: { connect: { id: room.id } } },
-        // });
+        handleJoinRoom(users, ws, parsedData, isVerified);
       }
 
       if (parsedData && parsedData.type === MessageType.LEAVE_ROOM) {
-        const user = users.find((user) => user.userId === isVerified.id);
-        if (!user) {
-          return;
-        }
-        user.rooms = user?.rooms.filter(
-          (roomId) => roomId !== parsedData.roomId
-        );
+        handleLeaveRoom(users, parsedData, isVerified);
       }
-      console.log(`users-${parsedData.type}`, users);
+
+      if (parsedData && parsedData.type === MessageType.MESSAGE) {
+        handleMessage(users, ws, parsedData, isVerified);
+      }
     });
   } catch (error) {
     console.error("Invalid token:", error);

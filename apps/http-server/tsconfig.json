@@ -8,6 +8,7 @@
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"],
+  "sourceMap": true
   // "paths": {
   //     "@repo/contracts/*": ["packages/contract/src/*"]
   //   }

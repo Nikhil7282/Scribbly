@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Body } from '@nestjs/common';
 import { RoomService } from './room.service';
 import { CreateRoomSchema, roomEndPoints } from '@repo/contract/room';
 import z from 'zod';
