@@ -1,13 +1,13 @@
 "use client";
 
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import {
-  MousePointer,
-  Square,
   Circle,
   ArrowRight,
   Type,
   ArrowLeft,
+  RectangleHorizontal,
+  Hand,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -35,16 +35,20 @@ function MenuItem({ icon, isActive = false, onClick }: MenuItemProps) {
   );
 }
 
-export default function Menu() {
-  const [activeItem, setActiveItem] = React.useState(1);
-
+export default function Menu({
+  activeTool,
+  setActiveTool,
+}: {
+  activeTool: number;
+  setActiveTool: Dispatch<SetStateAction<number>>;
+}) {
   const menuItems = [
     {
-      icon: <MousePointer className="w-full h-full" />,
+      icon: <Hand className="w-full h-full" />,
       id: 1,
     },
     {
-      icon: <Square className="w-full h-full" />,
+      icon: <RectangleHorizontal className="w-full h-full" />,
       id: 2,
     },
     {
@@ -74,8 +78,8 @@ export default function Menu() {
               <MenuItem
                 key={item.id}
                 icon={item.icon}
-                isActive={activeItem === item.id}
-                onClick={() => setActiveItem(item.id)}
+                isActive={activeTool === item.id}
+                onClick={() => setActiveTool(item.id)}
               />
             ))}
           </div>
