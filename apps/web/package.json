@@ -15,8 +15,11 @@
     "@radix-ui/react-slot": "^1.1.2",
     "@repo/ui": "workspace:*",
     "@tailwindcss/postcss": "^4.0.16",
+    "@ts-rest/core": "^3.51.0",
+    "@ts-rest/react-query": "^3.52.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "js-cookie": "^3.0.5",
     "lucide-react": "^0.484.0",
     "next": "^15.1.0",
     "postcss": "^8.5.3",
@@ -24,11 +27,14 @@
     "react-dom": "^19.0.0",
     "tailwind-merge": "^3.0.2",
     "tailwindcss": "^4.0.16",
-    "tw-animate-css": "^1.2.4"
+    "tw-animate-css": "^1.2.4",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@repo/contract": "workspace:*",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
     "@types/react": "18.3.1",
     "@types/react-dom": "18.3.0",

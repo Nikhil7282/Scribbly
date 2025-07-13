@@ -1,19 +1,26 @@
 import { Shape, ShapeTypeEnum } from "./shapeTypes";
 
-export const initDraw = (canvas: HTMLCanvasElement) => {
-  const width = window.innerWidth * 0.9;
-  const height = window.innerHeight * 0.9;
+export const initDraw = ({
+  canvas,
+  existingShapes,
+}: {
+  canvas: HTMLCanvasElement;
+  existingShapes: Shape[];
+}) => {
+  const width = window.innerWidth * 0.9; // width for canvas
+
+  const height = window.innerHeight * 0.9; // height for canvas
+
   canvas.width = width;
   canvas.height = height;
-
-  let existingShapes: Shape[] = [];
 
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
-  ctx.strokeStyle = "#fff";
+  ctx.strokeStyle = "#fff"; // stroke color
 
   let isMouseClicked = false;
+
   let startX = 0;
   let startY = 0;
 
