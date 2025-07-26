@@ -17,4 +17,10 @@ export class RoomController {
   createRoom(@GetUserFromToken() user: User, @Body() payload: CreateRoomDto) {
     return this.roomService.createRoom(payload, user);
   }
+
+  @Auth()
+  @TsRest(roomEndPoints.getAllShapesInRoom)
+  getAllShapesInRoom(@GetUserFromToken() user: User) {
+    return this.roomService.getAllShapesInRoom(user);
+  }
 }
