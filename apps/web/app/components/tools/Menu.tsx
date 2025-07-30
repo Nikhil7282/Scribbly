@@ -11,16 +11,19 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { MenuTypeEnum } from "@draw/shapeTypes";
 
 interface MenuItemProps {
   icon: React.ReactNode;
   isActive?: boolean;
   onClick?: () => void;
+  label?: string;
 }
 
-function MenuItem({ icon, isActive = false, onClick }: MenuItemProps) {
+function MenuItem({ icon, isActive = false, onClick, label }: MenuItemProps) {
   return (
     <Button
+      aria-label={label}
       variant="ghost"
       className={cn(
         "relative flex-shrink-0  h-10 w-10  p-0 text-gray-400 hover:text-white hover:bg-gray-700/50 transition-colors",
@@ -39,33 +42,45 @@ export default function Menu({
   activeTool,
   setActiveTool,
 }: {
-  activeTool: number;
-  setActiveTool: Dispatch<SetStateAction<number>>;
+  activeTool: MenuTypeEnum;
+  setActiveTool: Dispatch<SetStateAction<MenuTypeEnum>>;
 }) {
   const menuItems = [
     {
       icon: <Hand className="w-full h-full" />,
       id: 1,
+      type: MenuTypeEnum.HAND,
+      label: "Hand",
     },
     {
       icon: <RectangleHorizontal className="w-full h-full" />,
       id: 2,
+      type: MenuTypeEnum.RECTANGLE,
+      label: "Rectangle",
     },
     {
       icon: <Circle className="w-full h-full" />,
       id: 3,
+      type: MenuTypeEnum.CIRCLE,
+      label: "Circle",
     },
     {
       icon: <ArrowLeft className="w-full h-full" />,
       id: 4,
+      type: MenuTypeEnum.ARROW_LEFT,
+      label: "Arrow Left",
     },
     {
       icon: <ArrowRight className="w-full h-full" />,
       id: 5,
+      type: MenuTypeEnum.ARROW_RIGHT,
+      label: "Arrow Right",
     },
     {
       icon: <Type className="w-full h-full" />,
       id: 6,
+      type: MenuTypeEnum.TEXT,
+      label: "Text",
     },
   ];
 
@@ -78,8 +93,9 @@ export default function Menu({
               <MenuItem
                 key={item.id}
                 icon={item.icon}
-                isActive={activeTool === item.id}
-                onClick={() => setActiveTool(item.id)}
+                isActive={activeTool === item.type}
+                onClick={() => setActiveTool(item.type)}
+                label={item.label}
               />
             ))}
           </div>

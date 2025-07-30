@@ -1,18 +1,21 @@
 "use client";
-import Canvas from "@/components/tools/Canvas";
 import Menu from "@/components/tools/Menu";
-import { Shape } from "@draw/shapeTypes";
+import { MenuTypeEnum } from "@draw/shapeTypes";
 import { useState } from "react";
+import { useParams } from "next/navigation";
+import SocketConnection from "./SocketConnection";
 
 function CanvasPage() {
-  const [activeTool, setActiveTool] = useState<number>(1);
-  let existingShapes: Shape[] = [];
+  const { roomId } = useParams();
+
+  const [activeTool, setActiveTool] = useState<MenuTypeEnum>(MenuTypeEnum.HAND);
+  if (!roomId) return <div>Loading...</div>;
   return (
     <div className="w-screen h-screen flex items-center justify-center">
       <div className="absolute top-8 z-10">
         <Menu activeTool={activeTool} setActiveTool={setActiveTool} />
       </div>
-      <Canvas existingShapes={existingShapes} activeTool={activeTool} />
+      <SocketConnection activeTool={activeTool} roomId={roomId as string} />
     </div>
   );
 }

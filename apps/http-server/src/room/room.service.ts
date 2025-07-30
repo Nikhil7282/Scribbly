@@ -29,7 +29,7 @@ export class RoomService {
     };
   }
 
-  async getAllShapesInRoom(user: User) {
+  async getAllShapesInRoom(user: User, roomId: string) {
     const room = await prismaClient.rooms.findFirst({
       where: { adminId: user.id },
     });
@@ -39,7 +39,7 @@ export class RoomService {
     }
 
     const shapes = await prismaClient.chats.findMany({
-      where: { roomId: room.id },
+      where: { roomId },
     });
 
     return shapes;

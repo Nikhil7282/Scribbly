@@ -29,6 +29,9 @@ export const roomEndPoints = c.router(
     getAllShapesInRoom: {
       method: "GET",
       path: "/get-all-shapes-in-room",
+      query: z.object({
+        roomId: z.string(),
+      }),
       responses: {
         200: z.array(
           z.object({
