@@ -1,4 +1,4 @@
-import { Controller, Body } from '@nestjs/common';
+import { Controller, Body, Query } from '@nestjs/common';
 import { RoomService } from './room.service';
 import { CreateRoomSchema, roomEndPoints } from '@repo/contract/room';
 import z from 'zod';
@@ -16,5 +16,14 @@ export class RoomController {
   @TsRest(roomEndPoints.createRoom)
   createRoom(@GetUserFromToken() user: User, @Body() payload: CreateRoomDto) {
     return this.roomService.createRoom(payload, user);
+  }
+
+  @Auth()
+  @TsRest(roomEndPoints.getAllShapesInRoom)
+  getAllShapesInRoom(
+    @GetUserFromToken() user: User,
+    @Query('roomId') roomId: string,
+  ) {
+    return this.roomService.getAllShapesInRoom(user, roomId);
   }
 }

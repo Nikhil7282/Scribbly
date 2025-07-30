@@ -1,19 +1,34 @@
-import { Shape, ShapeTypeEnum } from "./shapeTypes";
+import { MenuTypeEnum, Shape, ShapeTypeEnum } from "./shapeTypes";
 
-export const initDraw = (canvas: HTMLCanvasElement) => {
-  const width = window.innerWidth * 0.9;
-  const height = window.innerHeight * 0.9;
+export const initDraw = async ({
+  canvas,
+  activeTool,
+  roomId,
+  socket,
+  shapes,
+}: {
+  canvas: HTMLCanvasElement;
+  activeTool: MenuTypeEnum;
+  roomId: string;
+  socket: WebSocket;
+  shapes: Shape[];
+}) => {
+  const width = window.innerWidth; // width for canvas
+
+  const height = window.innerHeight; // height for canvas
+
   canvas.width = width;
   canvas.height = height;
-
-  let existingShapes: Shape[] = [];
 
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
-  ctx.strokeStyle = "#fff";
+  ctx.strokeStyle = "#fff"; // stroke color
+
+  clearCanvas(shapes, canvas, ctx);
 
   let isMouseClicked = false;
+
   let startX = 0;
   let startY = 0;
 
@@ -34,8 +49,15 @@ export const initDraw = (canvas: HTMLCanvasElement) => {
     const w = currentX - startX;
     const h = currentY - startY;
 
-    clearCanvas(existingShapes, canvas, ctx);
-    ctx.strokeRect(startX, startY, w, h);
+    clearCanvas(shapes, canvas, ctx);
+    if (activeTool === MenuTypeEnum.RECTANGLE) {
+      ctx.strokeRect(startX, startY, w, h);
+    }
+    if (activeTool === MenuTypeEnum.CIRCLE) {
+      ctx.beginPath();
+      ctx.arc(startX, startY, w, 0, Math.PI * 2);
+      ctx.stroke();
+    }
   };
 
   const handleMouseUp = (event: MouseEvent) => {
@@ -48,15 +70,36 @@ export const initDraw = (canvas: HTMLCanvasElement) => {
     const w = currentX - startX;
     const h = currentY - startY;
 
-    const newShape: Shape = {
-      type: ShapeTypeEnum.RECTANGLE,
-      x: startX,
-      y: startY,
-      width: w,
-      height: h,
-    };
+    let newShape: Shape | null = null;
+    if (activeTool === MenuTypeEnum.RECTANGLE) {
+      newShape = {
+        type: ShapeTypeEnum.RECTANGLE,
+        x: startX,
+        y: startY,
+        width: w,
+        height: h,
+      };
+    }
+    if (activeTool === MenuTypeEnum.CIRCLE) {
+      newShape = {
+        type: ShapeTypeEnum.CIRCLE,
+        centerX: startX,
+        centerY: startY,
+        radius: w,
+      };
+    }
 
-    existingShapes.push(newShape);
+    if (newShape) {
+      shapes.push(newShape);
+      console.log("newShape", newShape);
+      socket.send(
+        JSON.stringify({
+          type: "MESSAGE",
+          roomId,
+          message: newShape,
+        })
+      );
+    }
   };
 
   canvas.addEventListener("mousedown", handleMouseDown);
@@ -71,15 +114,19 @@ export const initDraw = (canvas: HTMLCanvasElement) => {
 };
 
 const clearCanvas = (
-  existingShapes: Shape[],
+  shapes: Shape[],
   canvas: HTMLCanvasElement,
   ctx: CanvasRenderingContext2D
 ) => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  existingShapes.map((shape) => {
+  shapes.map((shape) => {
     if (shape.type === ShapeTypeEnum.RECTANGLE) {
       ctx.strokeRect(shape.x, shape.y, shape.width, shape.height);
+    }
+    if (shape.type === ShapeTypeEnum.CIRCLE) {
+      ctx.beginPath();
+      ctx.arc(shape.centerX, shape.centerY, shape.radius, 0, Math.PI * 2);
+      ctx.stroke();
     }
   });
 };

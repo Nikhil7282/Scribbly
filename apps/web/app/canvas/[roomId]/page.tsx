@@ -1,33 +1,21 @@
 "use client";
-import { useEffect, useRef } from "react";
-import { initDraw } from "@draw/drawConfig";
+import Menu from "@/components/tools/Menu";
+import { MenuTypeEnum } from "@draw/shapeTypes";
+import { useState } from "react";
+import { useParams } from "next/navigation";
+import SocketConnection from "./SocketConnection";
 
 function CanvasPage() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { roomId } = useParams();
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const drawHandlers = initDraw(canvas);
-
-    if (!drawHandlers) return;
-
-    const { handleMouseDown, handleMouseMove, handleMouseUp } = drawHandlers;
-
-    return () => {
-      canvas.removeEventListener("mousedown", handleMouseDown);
-      canvas.removeEventListener("mousemove", handleMouseMove);
-      canvas.removeEventListener("mouseup", handleMouseUp);
-    };
-  }, []);
-
+  const [activeTool, setActiveTool] = useState<MenuTypeEnum>(MenuTypeEnum.HAND);
+  if (!roomId) return <div>Loading...</div>;
   return (
     <div className="w-screen h-screen flex items-center justify-center">
-      <canvas
-        ref={canvasRef}
-        className="w-[90vw] h-[90vh] border border-gray-400 rounded-md"
-      />
+      <div className="absolute top-8 z-10">
+        <Menu activeTool={activeTool} setActiveTool={setActiveTool} />
+      </div>
+      <SocketConnection activeTool={activeTool} roomId={roomId as string} />
     </div>
   );
 }

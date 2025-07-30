@@ -28,4 +28,20 @@ export class RoomService {
       roomName: room.name,
     };
   }
+
+  async getAllShapesInRoom(user: User, roomId: string) {
+    const room = await prismaClient.rooms.findFirst({
+      where: { adminId: user.id },
+    });
+
+    if (!room) {
+      throw new BadRequestException('Room not found');
+    }
+
+    const shapes = await prismaClient.chats.findMany({
+      where: { roomId },
+    });
+
+    return shapes;
+  }
 }

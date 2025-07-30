@@ -25,7 +25,30 @@ export const roomEndPoints = c.router(
         200: CreateRoomSuccessResponse,
       },
     },
+
+    getAllShapesInRoom: {
+      method: "GET",
+      path: "/get-all-shapes-in-room",
+      query: z.object({
+        roomId: z.string(),
+      }),
+      responses: {
+        200: z.array(
+          z.object({
+            id: z.string(),
+            shape: z.string(),
+            color: z.string(),
+            x: z.number(),
+            y: z.number(),
+            width: z.number(),
+            height: z.number(),
+            rotation: z.number(),
+          })
+        ),
+      },
+    },
   },
+
   {
     pathPrefix: "/room",
   }

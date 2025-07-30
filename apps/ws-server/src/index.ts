@@ -27,6 +27,12 @@ wss.on("connection", (ws, req) => {
     const isVerified = verifyUser(token);
 
     if (!isVerified) {
+      ws.send(
+        JSON.stringify({
+          message: "Invalid token",
+          Error: true,
+        })
+      );
       ws.close();
       return;
     }

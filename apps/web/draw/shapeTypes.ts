@@ -3,6 +3,15 @@ export enum ShapeTypeEnum {
   CIRCLE = "CIRCLE",
 }
 
+export enum MenuTypeEnum {
+  HAND = "HAND",
+  ARROW_LEFT = "ARROW_LEFT",
+  ARROW_RIGHT = "ARROW_RIGHT",
+  CIRCLE = ShapeTypeEnum.CIRCLE,
+  RECTANGLE = ShapeTypeEnum.RECTANGLE,
+  TEXT = "TEXT",
+}
+
 export type Rectangle = {
   type: ShapeTypeEnum.RECTANGLE;
   x: number;

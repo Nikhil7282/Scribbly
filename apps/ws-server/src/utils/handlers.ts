@@ -1,6 +1,7 @@
 import { JwtPayload } from "jsonwebtoken";
 import { User, WebSocketData } from "./types";
 import { WebSocket } from "ws";
+import { prismaClient } from "@repo/db/client";
 
 export async function handleJoinRoom(
   users: User[],
@@ -47,6 +48,15 @@ export async function handleMessage(
   if (!user) {
     return;
   }
+
+  await prismaClient.chats.create({
+    data: {
+      message: JSON.stringify(parsedData.message) ?? "",
+      roomId: parsedData.roomId ?? "",
+      userId: isVerified.id,
+    },
+  });
+
   users.forEach((user) => {
     if (user.rooms.includes(parsedData.roomId)) {
       user.ws.send(JSON.stringify(parsedData));
