@@ -62,10 +62,10 @@ export default function Home() {
         </div>
         <nav className="ml-auto flex gap-4 sm:gap-6 ">
           <Link
-            href="/sign-in"
+            href="/login"
             className="!text-slate-700 text-sm font-medium  hover:!text-blue-600 !cursor-pointer"
           >
-            Sign In
+            Login
           </Link>
           <Link
             href="/sign-up"
