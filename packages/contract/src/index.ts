@@ -43,8 +43,9 @@ const AuthEndPoints = c.router(
       path: "/login",
       body: LoginSchema,
       responses: {
-        200: z.object({
+        201: z.object({
           message: z.string(),
+          token: z.string(),
         }),
       },
     },
@@ -65,6 +66,52 @@ const AuthEndPoints = c.router(
   }
 );
 
+export const CreateRoomSuccessResponse = z.object({
+  message: z.string(),
+  roomId: z.string(),
+  roomName: z.string(),
+});
+
+export const roomEndPoints = c.router(
+  {
+    createRoom: {
+      method: "POST",
+      path: "/create-room",
+      body: z.object({}),
+      responses: {
+        201: CreateRoomSuccessResponse,
+      },
+    },
+
+    getAllShapesInRoom: {
+      method: "GET",
+      path: "/get-all-shapes-in-room",
+      query: z.object({
+        roomId: z.string(),
+      }),
+      responses: {
+        200: z.array(
+          z.object({
+            id: z.string(),
+            shape: z.string(),
+            color: z.string(),
+            x: z.number(),
+            y: z.number(),
+            width: z.number(),
+            height: z.number(),
+            rotation: z.number(),
+          })
+        ),
+      },
+    },
+  },
+
+  {
+    pathPrefix: "/room",
+  }
+);
+
 export const contract = c.router({
   authContract: AuthEndPoints,
+  roomContract: roomEndPoints,
 });

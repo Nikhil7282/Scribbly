@@ -1,8 +1,7 @@
 "use client";
 
 import type React from "react";
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, Palette, Sparkles } from "lucide-react";
@@ -17,31 +16,52 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import axios from "axios";
-import { getApiUrl } from "@utils/env";
+import { useApi } from "@/hooks/useApi";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { getQueryClient } from "@utils/api";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const [isLoading, setIsLoading] = useState(false);
+  const { makeApiCall } = useApi();
+
+  useEffect(() => {
+    const token = Cookies.get("userToken");
+    if (token) {
+      router.push("/canvas");
+    }
+  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    try {
-      const res = await axios.post(`http://localhost:8000/auth/login`, {
-        email,
-        password,
-      });
-      console.log(res.data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
+    await makeApiCall({
+      showLoader: false,
+
+      fetcherFn: () =>
+        getQueryClient().authContract.login.mutation({
+          body: {
+            email,
+            password,
+          },
+        }),
+      onSuccessFn: (response) => {
+        if (response.status === 201 && response.body) {
+          Cookies.set("userToken", response.body.token);
+          router.push("/canvas");
+          toast.success("Login successful");
+        }
+      },
+      finallyFn: () => setIsLoading(false),
+    });
   };
 
   return (

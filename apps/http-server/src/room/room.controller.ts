@@ -1,25 +1,24 @@
-import { Controller, Body, Query } from '@nestjs/common';
+import { Controller, Query } from '@nestjs/common';
 import { RoomService } from './room.service';
-import { CreateRoomSchema, roomEndPoints } from '@repo/contract/room';
-import z from 'zod';
 import { Auth, GetUserFromToken } from '../auth/user.decorator';
-import { TsRest } from '@ts-rest/nest';
+import { nestControllerContract, TsRest } from '@ts-rest/nest';
 import type { User } from '../auth/auth.controller';
+import { contract } from '@repo/contract/client';
 
-export type CreateRoomDto = z.infer<typeof CreateRoomSchema>;
+const RoomContract = nestControllerContract(contract.roomContract);
 
 @Controller()
 export class RoomController {
   constructor(private readonly roomService: RoomService) {}
 
   @Auth()
-  @TsRest(roomEndPoints.createRoom)
-  createRoom(@GetUserFromToken() user: User, @Body() payload: CreateRoomDto) {
-    return this.roomService.createRoom(payload, user);
+  @TsRest(RoomContract.createRoom)
+  createRoom(@GetUserFromToken() user: User) {
+    return this.roomService.createRoom(user);
   }
 
   @Auth()
-  @TsRest(roomEndPoints.getAllShapesInRoom)
+  @TsRest(RoomContract.getAllShapesInRoom)
   getAllShapesInRoom(
     @GetUserFromToken() user: User,
     @Query('roomId') roomId: string,
