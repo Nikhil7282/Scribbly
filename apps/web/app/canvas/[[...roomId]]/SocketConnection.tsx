@@ -4,24 +4,33 @@ import Canvas from "@/components/tools/Canvas";
 import { MenuTypeEnum, Shape } from "@draw/shapeTypes";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 function SocketConnection({
   roomId,
   activeTool,
 }: {
-  roomId: string;
+  roomId?: string;
   activeTool: MenuTypeEnum;
 }) {
-  const token = localStorage.getItem("userToken");
+  const token = Cookies.get("userToken");
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [shapes, setShapes] = useState<Shape[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [reRenderCount, setReRenderCount] = useState(0);
-
-  console.log("reRenderCount", reRenderCount);
+  const setInitialLocalShapes = () => {
+    const existingShapes = localStorage.getItem("canvas_shapes");
+    if (existingShapes) {
+      setShapes(JSON.parse(existingShapes));
+    }
+  };
 
   useEffect(() => {
+    if (!roomId) {
+      setInitialLocalShapes();
+      setLoading(false);
+      return;
+    }
     const fetchShapes = async () => {
       try {
         const res = await axios.get(
@@ -62,14 +71,12 @@ function SocketConnection({
       }
     };
 
-    setReRenderCount((prevCount) => prevCount + 1);
-
     return () => {
       socket.close();
     };
   }, [roomId]);
 
-  if (loading || !socket) return <div>Loading...</div>;
+  if (loading) return <div>Loading...</div>;
 
   return (
     <Canvas

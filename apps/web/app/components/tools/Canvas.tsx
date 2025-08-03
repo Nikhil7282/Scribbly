@@ -11,8 +11,8 @@ function Canvas({
   shapes,
 }: {
   activeTool: MenuTypeEnum;
-  roomId: string;
-  socket: WebSocket;
+  roomId?: string;
+  socket: WebSocket | null;
   shapes: Shape[];
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -24,7 +24,17 @@ function Canvas({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    initDraw({ canvas, activeTool, roomId, socket, shapes });
+    const cleanUp = initDraw({
+      canvas,
+      activeTool,
+      roomId,
+      socket,
+      shapes,
+    });
+
+    return () => {
+      cleanUp?.();
+    };
   }, [shapes, activeTool]);
 
   return <canvas ref={canvasRef} style={{ width: "100%", height: "100%" }} />;

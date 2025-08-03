@@ -1,26 +1,3 @@
-const getEnvConfig = () => {
-  switch (process.env.ENV) {
-    case "dev": {
-      return {
-        env: "dev",
-        apiUrl: "http://localhost:8000",
-      };
-    }
-    case "stage": {
-      return {
-        env: "stage",
-        apiUrl: "/api",
-      };
-    }
-    case "prod": {
-      return {
-        env: "prod",
-        apiUrl: "/api",
-      };
-    }
-  }
-};
-
 const nextConfig = {
   output: "standalone",
   reactStrictMode: true,
@@ -28,7 +5,9 @@ const nextConfig = {
   experimental: {
     externalDir: true,
   },
-  publicRuntimeConfig: getEnvConfig(),
+  env: {
+    apiUrl: process.env.NEXT_PUBLIC_API_URL,
+  },
 };
 
 export default nextConfig;

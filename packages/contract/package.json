@@ -2,12 +2,14 @@
   "name": "@repo/contract",
   "version": "1.0.0",
   "main": "index.js",  
+  
   "exports":{
     "./client":  "./src/index.ts",
     "./constants":"./src/backend-constants.ts",
-    "./room":"./src/room.ts"
+    "./room":"./src/room.contract.ts"
   },
   "scripts": {
+    "build": "tsc -b",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {

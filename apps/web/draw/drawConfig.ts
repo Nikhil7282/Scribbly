@@ -1,6 +1,6 @@
 import { MenuTypeEnum, Shape, ShapeTypeEnum } from "./shapeTypes";
 
-export const initDraw = async ({
+export const initDraw = ({
   canvas,
   activeTool,
   roomId,
@@ -9,8 +9,8 @@ export const initDraw = async ({
 }: {
   canvas: HTMLCanvasElement;
   activeTool: MenuTypeEnum;
-  roomId: string;
-  socket: WebSocket;
+  roomId?: string;
+  socket: WebSocket | null;
   shapes: Shape[];
 }) => {
   const width = window.innerWidth; // width for canvas
@@ -52,8 +52,7 @@ export const initDraw = async ({
     clearCanvas(shapes, canvas, ctx);
     if (activeTool === MenuTypeEnum.RECTANGLE) {
       ctx.strokeRect(startX, startY, w, h);
-    }
-    if (activeTool === MenuTypeEnum.CIRCLE) {
+    } else if (activeTool === MenuTypeEnum.CIRCLE) {
       ctx.beginPath();
       ctx.arc(startX, startY, w, 0, Math.PI * 2);
       ctx.stroke();
@@ -71,6 +70,7 @@ export const initDraw = async ({
     const h = currentY - startY;
 
     let newShape: Shape | null = null;
+
     if (activeTool === MenuTypeEnum.RECTANGLE) {
       newShape = {
         type: ShapeTypeEnum.RECTANGLE,
@@ -79,8 +79,7 @@ export const initDraw = async ({
         width: w,
         height: h,
       };
-    }
-    if (activeTool === MenuTypeEnum.CIRCLE) {
+    } else if (activeTool === MenuTypeEnum.CIRCLE) {
       newShape = {
         type: ShapeTypeEnum.CIRCLE,
         centerX: startX,
@@ -91,14 +90,18 @@ export const initDraw = async ({
 
     if (newShape) {
       shapes.push(newShape);
-      console.log("newShape", newShape);
-      socket.send(
-        JSON.stringify({
-          type: "MESSAGE",
-          roomId,
-          message: newShape,
-        })
-      );
+
+      if (roomId && socket) {
+        socket.send(
+          JSON.stringify({
+            type: "MESSAGE",
+            roomId,
+            message: newShape,
+          })
+        );
+      } else {
+        localStorage.setItem("canvas_shapes", JSON.stringify(shapes));
+      }
     }
   };
 
@@ -106,10 +109,10 @@ export const initDraw = async ({
   canvas.addEventListener("mousemove", handleMouseMove);
   canvas.addEventListener("mouseup", handleMouseUp);
 
-  return {
-    handleMouseDown,
-    handleMouseMove,
-    handleMouseUp,
+  return () => {
+    canvas.removeEventListener("mousedown", handleMouseDown);
+    canvas.removeEventListener("mousemove", handleMouseMove);
+    canvas.removeEventListener("mouseup", handleMouseUp);
   };
 };
 
